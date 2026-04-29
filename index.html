@@ -360,6 +360,132 @@
             margin-bottom: 8px;
         }
 
+        .problem-card {
+            background: #1a1f2e;
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #e2001a, #ff6b35, #e2001a);
+        }
+
+        .problem-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .problem-icon {
+            font-size: 28px;
+        }
+
+        .problem-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .problem-intro {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .problem-intro strong {
+            color: #cbd5e1;
+        }
+
+        .jamf-quote {
+            background: #0f1117;
+            border-left: 3px solid #e2001a;
+            border-radius: 0 8px 8px 0;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-style: italic;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        .problem-mid {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .problem-mid em {
+            color: #cbd5e1;
+            font-style: italic;
+        }
+
+        .problem-reality {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .problem-reality { grid-template-columns: 1fr; }
+        }
+
+        .reality-item {
+            background: #0f1117;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reality-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .reality-item div {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .reality-item strong {
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .reality-item span {
+            font-size: 11px;
+            color: #ef4444;
+        }
+
+        .problem-solution {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.7;
+            padding-top: 16px;
+            border-top: 1px solid #2d3748;
+        }
+
+        .problem-solution em {
+            color: #22c55e;
+            font-style: normal;
+            font-weight: 600;
+        }
+
         footer {
             text-align: center;
             font-size: 13px;
@@ -405,6 +531,42 @@
             scores flowing into Okta on macOS devices managed by Microsoft Intune — no JAMF required.
         </p>
     </header>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="problem-icon">🤦</span>
+            <h2>The Problem</h2>
+        </div>
+        <p class="problem-intro">You work at a company that uses <strong>Microsoft Intune</strong> to manage Macs. You want CrowdStrike ZTA scores in Okta so you can enforce Zero Trust policies. You open the Okta docs. Every single guide says:</p>
+        <div class="jamf-quote">
+            "Step 1: In JAMF Pro, navigate to…"
+        </div>
+        <p class="problem-mid">You search for Intune. Nothing. You search for "non-JAMF." Nothing. You find one community post from 2022 that says <em>"it should work the same way"</em> and offers no further help.</p>
+        <div class="problem-reality">
+            <div class="reality-item">
+                <span class="reality-icon">📄</span>
+                <div>
+                    <strong>Okta's docs</strong>
+                    <span>100% JAMF</span>
+                </div>
+            </div>
+            <div class="reality-item">
+                <span class="reality-icon">📄</span>
+                <div>
+                    <strong>CrowdStrike's docs</strong>
+                    <span>100% JAMF</span>
+                </div>
+            </div>
+            <div class="reality-item">
+                <span class="reality-icon">🌐</span>
+                <div>
+                    <strong>The internet</strong>
+                    <span>"Just use JAMF"</span>
+                </div>
+            </div>
+        </div>
+        <p class="problem-solution">It <em>does</em> work with Intune — but the two MDM preference profiles Okta Verify needs are structured completely differently in Intune vs JAMF, and one of them will silently fail if you get it wrong. This tool generates both profiles correctly so you don't have to figure that out the hard way.</p>
+    </div>
 
     <div class="how-it-works">
         <h2>How it works</h2>
