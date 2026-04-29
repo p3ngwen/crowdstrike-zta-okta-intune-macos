@@ -528,7 +528,7 @@
         <h1>CrowdStrike ZTA → <em>Okta</em><br>Intune Config Generator</h1>
         <p class="subtitle">
             Generate the two Intune configuration profiles needed to get CrowdStrike Zero Trust Assessment
-            scores flowing into Okta on macOS devices managed by Microsoft Intune — no JAMF required.
+            scores flowing into Okta on macOS devices managed by Microsoft Intune. No JAMF required.
         </p>
     </header>
 
@@ -565,7 +565,7 @@
                 </div>
             </div>
         </div>
-        <p class="problem-solution">It <em>does</em> work with Intune — but the two MDM preference profiles Okta Verify needs are structured completely differently in Intune vs JAMF, and one of them will silently fail if you get it wrong. This tool generates both profiles correctly so you don't have to figure that out the hard way.</p>
+        <p class="problem-solution">It <em>does</em> work with Intune. The two MDM preference profiles Okta Verify needs are structured completely differently in Intune vs JAMF, and one of them will silently fail if you get it wrong. This tool generates both profiles correctly so you don't have to figure that out the hard way.</p>
     </div>
 
     <div class="how-it-works">
@@ -585,11 +585,11 @@
 
     <div class="card">
         <h2>Generate your profiles</h2>
-        <p>Enter your organisation's reverse-domain identifier. This is used in the profile PayloadIdentifiers and should match your org's convention.</p>
+        <p>Enter your organization's reverse-domain identifier. This is used in the profile PayloadIdentifiers and should match your org's convention.</p>
 
         <div class="field">
             <label>
-                Organisation identifier
+                Organization identifier
                 <span class="hint">e.g. com.acme or com.yourcompany</span>
             </label>
             <input
@@ -608,7 +608,7 @@
         <button class="generate-btn" onclick="generate()">Generate &amp; Download Both Profiles</button>
 
         <div class="success-banner" id="successBanner">
-            ✓ Both profiles downloaded — upload them to Intune as Custom profiles on Device channel.
+            ✓ Both profiles downloaded. Upload them to Intune as Custom profiles on Device channel.
         </div>
     </div>
 
@@ -619,7 +619,7 @@
             <div class="step-num">1</div>
             <div class="step-content">
                 <h3>Verify your Falcon sensor is generating ZTA data</h3>
-                <p>Run this on a test Mac. If the directory or <code>data.zta</code> file is missing, ZTA is not enabled on your CrowdStrike tenant for macOS — contact CrowdStrike Support to enable it before proceeding.</p>
+                <p>Run this on a test Mac. If the directory or <code>data.zta</code> file is missing, ZTA is not enabled on your CrowdStrike tenant for macOS. Contact CrowdStrike Support to enable it before proceeding.</p>
             </div>
         </div>
 
@@ -659,7 +659,7 @@
             <div class="step-num">6</div>
             <div class="step-content">
                 <h3>Test with a FastPass login</h3>
-                <p>ZTA scores are only transmitted on <strong>FastPass (phishing-resistant)</strong> authentication — not password + TOTP. Authenticate via Okta Verify biometric and check the Okta System Log.</p>
+                <p>ZTA scores are only transmitted on <strong>FastPass (phishing-resistant)</strong> authentication, not password + TOTP. Authenticate via Okta Verify biometric and check the Okta System Log.</p>
             </div>
         </div>
     </div>
