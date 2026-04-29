@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowdStrike ZTA + Okta · Intune Config Generator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1117;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1a1f2e;
+            border: 1px solid #2d3748;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        .badge span {
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f1f5f9;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        h1 em {
+            font-style: normal;
+            color: #e2001a;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .how-it-works {
+            background: #1a1f2e;
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .how-it-works h2 {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            background: #0f1117;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #cbd5e1;
+            white-space: nowrap;
+        }
+
+        .flow-arrow {
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1a1f2e;
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        label .hint {
+            font-weight: 400;
+            color: #64748b;
+            margin-left: 6px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: #0f1117;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #f1f5f9;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+        }
+
+        input[type="text"].error {
+            border-color: #ef4444;
+        }
+
+        .field-error {
+            font-size: 12px;
+            color: #ef4444;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .preview {
+            background: #0f1117;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #64748b;
+            margin-top: 8px;
+            word-break: break-all;
+        }
+
+        .preview .highlight {
+            color: #3b82f6;
+        }
+
+        .downloads {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 500px) {
+            .downloads { grid-template-columns: 1fr; }
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .download-btn:hover {
+            background: #253044;
+            border-color: #3b82f6;
+            color: #fff;
+        }
+
+        .download-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .download-btn svg {
+            flex-shrink: 0;
+        }
+
+        .download-btn .filename {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 11px;
+            color: #64748b;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .download-btn-inner {
+            text-align: left;
+        }
+
+        .generate-btn {
+            width: 100%;
+            background: #e2001a;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+
+        .generate-btn:hover {
+            background: #c0001a;
+        }
+
+        .instructions {
+            background: #1a1f2e;
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .instructions h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .step:last-child { margin-bottom: 0; }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: #e2001a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .step-content h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .step-content code {
+            background: #0f1117;
+            border: 1px solid #2d3748;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            color: #93c5fd;
+        }
+
+        .verify-block {
+            background: #1a1f2e;
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .verify-block h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        pre {
+            background: #0f1117;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 12px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #94a3b8;
+            overflow-x: auto;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        pre:last-child { margin-bottom: 0; }
+
+        .pre-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 13px;
+            color: #475569;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #1e293b;
+        }
+
+        footer a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        footer a:hover { color: #94a3b8; }
+
+        .success-banner {
+            display: none;
+            background: #052e16;
+            border: 1px solid #166534;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #4ade80;
+            margin-top: 16px;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success-banner.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <div class="badge"><span></span> Validated on macOS + Intune + Okta</div>
+        <h1>CrowdStrike ZTA → <em>Okta</em><br>Intune Config Generator</h1>
+        <p class="subtitle">
+            Generate the two Intune configuration profiles needed to get CrowdStrike Zero Trust Assessment
+            scores flowing into Okta on macOS devices managed by Microsoft Intune — no JAMF required.
+        </p>
+    </header>
+
+    <div class="how-it-works">
+        <h2>How it works</h2>
+        <div class="flow">
+            <div class="flow-step">Falcon sensor</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">data.zta</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Okta Verify plugin</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Okta cloud</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">ZTA policy</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Generate your profiles</h2>
+        <p>Enter your organisation's reverse-domain identifier. This is used in the profile PayloadIdentifiers and should match your org's convention.</p>
+
+        <div class="field">
+            <label>
+                Organisation identifier
+                <span class="hint">e.g. com.acme or com.yourcompany</span>
+            </label>
+            <input
+                type="text"
+                id="orgId"
+                placeholder="com.yourorg"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+            />
+            <div class="field-error" id="orgIdError">Please enter a valid reverse-domain identifier (e.g. com.yourorg)</div>
+            <div class="preview" id="orgPreview">PayloadIdentifier: <span class="highlight">com.yourorg</span>.okta-crowdstrike-zta</div>
+        </div>
+
+        <button class="generate-btn" onclick="generate()">Generate &amp; Download Both Profiles</button>
+
+        <div class="success-banner" id="successBanner">
+            ✓ Both profiles downloaded — upload them to Intune as Custom profiles on Device channel.
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h2>Deployment steps</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h3>Verify your Falcon sensor is generating ZTA data</h3>
+                <p>Run this on a test Mac. If the directory or <code>data.zta</code> file is missing, ZTA is not enabled on your CrowdStrike tenant for macOS — contact CrowdStrike Support to enable it before proceeding.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h3>Add CrowdStrike integration in Okta</h3>
+                <p>Okta Admin Console → <strong>Security → Device integrations → Endpoint security → Add → CrowdStrike</strong>. Select macOS as a target platform.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h3>Upload both generated profiles to Intune</h3>
+                <p>For each file: <strong>Devices → Configuration → Create → macOS → Templates → Custom</strong>. Set deployment channel to <strong>Device channel</strong>. Assign to your macOS device group.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h3>Ensure your Falcon MDM profile has AllowUserOverrides set to false</h3>
+                <p>If <code>AllowUserOverrides</code> is <code>true</code> in your System Extensions payload, the Falcon extension can be unloaded and <code>data.zta</code> will stop being written. Set it to <code>false</code>.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <h3>Sync and reboot</h3>
+                <p>Force a sync from Company Portal. A reboot may be required for the profiles to take full effect.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+                <h3>Test with a FastPass login</h3>
+                <p>ZTA scores are only transmitted on <strong>FastPass (phishing-resistant)</strong> authentication — not password + TOTP. Authenticate via Okta Verify biometric and check the Okta System Log.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="verify-block">
+        <h2>Verification</h2>
+        <div class="pre-label">Run on a test Mac after profiles land</div>
+        <pre>
+# data.zta should exist and be recently updated
+ls -la "/Library/Application Support/CrowdStrike/ZeroTrustAssessment/"
+
+# Both profiles should show OktaVerify.Plugins as an array
+plutil -convert xml1 /Library/Managed\ Preferences/com.okta.mobile.plist -o - | grep -A3 "OktaVerify.Plugins"
+plutil -convert xml1 /Library/Managed\ Preferences/com.okta.mobile.auth-service-extension.plist -o - | grep -A3 "OktaVerify.Plugins"</pre>
+
+        <div class="pre-label">What success looks like in Okta System Log</div>
+        <pre>
+"CROWDSTRIKE": {
+  "overall": 99,
+  "os": 96,
+  "sensorConfig": 100,
+  "csPlatform": "macOS",
+  "aid": "...",
+  "cid": "..."
+}</pre>
+
+        <div class="pre-label">Okta policy expression examples</div>
+        <pre>
+device.provider.zta.overall >= 70
+device.provider.zta.sensorConfig == 100
+device.provider.zta.os >= 80</pre>
+    </div>
+
+    <footer>
+        Validated on macOS + Microsoft Intune + Okta Identity Engine + CrowdStrike Falcon &nbsp;·&nbsp;
+        <a href="https://github.com" target="_blank">View on GitHub</a>
+    </footer>
+
+</div>
+
+<script>
+    const orgIdInput = document.getElementById('orgId');
+    const orgPreview = document.getElementById('orgPreview');
+    const orgIdError = document.getElementById('orgIdError');
+
+    orgIdInput.addEventListener('input', () => {
+        const val = orgIdInput.value.trim() || 'com.yourorg';
+        orgPreview.innerHTML = `PayloadIdentifier: <span class="highlight">${escapeHtml(val)}</span>.okta-crowdstrike-zta`;
+        orgIdInput.classList.remove('error');
+        orgIdError.style.display = 'none';
+    });
+
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function validate() {
+        const val = orgIdInput.value.trim();
+        if (!val || !/^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)+$/.test(val)) {
+            orgIdInput.classList.add('error');
+            orgIdError.style.display = 'block';
+            orgIdInput.focus();
+            return null;
+        }
+        return val;
+    }
+
+    function download(filename, content) {
+        const blob = new Blob([content], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function generate() {
+        const org = validate();
+        if (!org) return;
+
+        download(
+            'okta-crowdstrike-zta-com.okta.mobile.mobileconfig',
+            buildOktaMobile(org)
+        );
+
+        setTimeout(() => {
+            download(
+                'okta-crowdstrike-zta-auth-service-extension.mobileconfig',
+                buildAuthServiceExtension(org)
+            );
+        }, 400);
+
+        const banner = document.getElementById('successBanner');
+        banner.classList.add('show');
+    }
+
+    function buildOktaMobile(org) {
+        return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadType</key>
+            <string>com.apple.ManagedClient.preferences</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PayloadIdentifier</key>
+            <string>${org}.okta-crowdstrike-zta.prefs</string>
+            <key>PayloadUUID</key>
+            <string>8F3E2A1B-4C5D-6E7F-8A9B-0C1D2E3F4A5B</string>
+            <key>PayloadDisplayName</key>
+            <string>Okta Verify CrowdStrike ZTA Plugin Config</string>
+            <key>PayloadContent</key>
+            <dict>
+                <key>com.okta.mobile</key>
+                <dict>
+                    <key>Forced</key>
+                    <array>
+                        <dict>
+                            <key>mcx_preference_settings</key>
+                            <dict>
+                                <key>OktaVerify.Plugins</key>
+                                <array>
+                                    <string>com.crowdstrike.zta</string>
+                                </array>
+                                <key>com.crowdstrike.zta</key>
+                                <dict>
+                                    <key>description</key>
+                                    <string>File-based EDR integration between Okta Verify and the CrowdStrike Falcon agent</string>
+                                    <key>format</key>
+                                    <string>JWT</string>
+                                    <key>location</key>
+                                    <string>/Library/Application Support/CrowdStrike/ZeroTrustAssessment/data.zta</string>
+                                    <key>name</key>
+                                    <string>com.crowdstrike.zta</string>
+                                    <key>type</key>
+                                    <string>FILE</string>
+                                </dict>
+                            </dict>
+                        </dict>
+                    </array>
+                </dict>
+            </dict>
+        </dict>
+    </array>
+    <key>PayloadDisplayName</key>
+    <string>MacOS - Okta Verify CrowdStrike ZTA Plugin (com.okta.mobile)</string>
+    <key>PayloadIdentifier</key>
+    <string>${org}.okta-crowdstrike-zta</string>
+    <key>PayloadRemovalDisallowed</key>
+    <true/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>C3D4E5F6-A7B8-9012-CDEF-123456789012</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>`;
+    }
+
+    function buildAuthServiceExtension(org) {
+        return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadDescription</key>
+            <string>Configures Okta Verify CrowdStrike ZTA plugin for the auth-service-extension</string>
+            <key>PayloadDisplayName</key>
+            <string>Okta Verify CrowdStrike ZTA Plugin (auth-service-extension)</string>
+            <key>PayloadIdentifier</key>
+            <string>${org}.okta-crowdstrike-zta.auth-service-extension.prefs</string>
+            <key>PayloadType</key>
+            <string>com.apple.ManagedClient.preferences</string>
+            <key>PayloadUUID</key>
+            <string>A1B2C3D4-E5F6-7890-ABCD-EF1234567890</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PayloadContent</key>
+            <dict>
+                <key>com.okta.mobile.auth-service-extension</key>
+                <dict>
+                    <key>Forced</key>
+                    <array>
+                        <dict>
+                            <key>mcx_preference_settings</key>
+                            <dict>
+                                <key>OktaVerify.Plugins</key>
+                                <array>
+                                    <string>com.crowdstrike.zta</string>
+                                </array>
+                                <key>com.crowdstrike.zta</key>
+                                <dict>
+                                    <key>description</key>
+                                    <string>File-based EDR integration between Okta Verify and the CrowdStrike Falcon agent</string>
+                                    <key>format</key>
+                                    <string>JWT</string>
+                                    <key>location</key>
+                                    <string>/Library/Application Support/CrowdStrike/ZeroTrustAssessment/data.zta</string>
+                                    <key>name</key>
+                                    <string>com.crowdstrike.zta</string>
+                                    <key>type</key>
+                                    <string>FILE</string>
+                                </dict>
+                            </dict>
+                        </dict>
+                    </array>
+                </dict>
+            </dict>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Configures Okta Verify to use the CrowdStrike ZTA plugin via the auth-service-extension preference domain</string>
+    <key>PayloadDisplayName</key>
+    <string>MacOS - Okta Verify CrowdStrike ZTA (auth-service-extension)</string>
+    <key>PayloadIdentifier</key>
+    <string>${org}.okta-crowdstrike-zta.auth-service-extension</string>
+    <key>PayloadRemovalDisallowed</key>
+    <true/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>B2C3D4E5-F6A7-8901-BCDE-F12345678901</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>`;
+    }
+</script>
+</body>
+</html>
